@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">StickyHeaders</string>
+    <string name="title_activity_main">Sticky Headers Demo</string>
+    <string name="title_activity_diverse_recycler_adapter_demo">DiverseRecyclerAdapterDemoActivity</string>
+</resources>
