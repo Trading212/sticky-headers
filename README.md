@@ -40,7 +40,7 @@ class NotDiverseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 ## ViewHolder
 ```kotlin
 class StickyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), StickyHeader {
-    override fun stickyId() = items[adapterPosition]
+    override fun stickyId() = items[adapterPosition].title
 }
 ```
 
