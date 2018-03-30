@@ -6,7 +6,7 @@ A simple RecyclerView ItemDecoration that draws sticky headers with minimal cere
 
 ## Installation
 
-```implementation 'com.trading212:sticky-headers:0.1.0'```
+Pending release. Feel free to checkout the project and use as a module until official release.
 
 ## Getting Started
 
@@ -39,7 +39,7 @@ class NotDiverseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
 ## ViewHolder
 ```kotlin
-class StickyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), StickyHeader<String> {
+class StickyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), StickyHeader {
     override fun stickyId() = items[adapterPosition]
 }
 ```
