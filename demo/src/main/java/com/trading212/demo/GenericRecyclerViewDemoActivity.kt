@@ -12,27 +12,27 @@ import com.trading212.stickyheader.StickyHeaderDecoration
 class GenericRecyclerViewDemoActivity : BaseActivity() {
     override fun fillRecyclerView() {
 
-        val gamesRecyclerItems = generateGamesList().map { NotDiverseItem(it) }
+        val gamesRecyclerItems = generateGamesList().map { RecyclerItem(it) }
 
-        val programmingLanguagesItems = generateProgrammingLanguagesList().map { NotDiverseItem(it) }
+        val programmingLanguagesItems = generateProgrammingLanguagesList().map { RecyclerItem(it) }
 
-        val topSongsItems = generateSongsList().map { NotDiverseItem(it) }
+        val topSongsItems = generateSongsList().map { RecyclerItem(it) }
 
-        val recyclerItems = mutableListOf<NotDiverseItem>().run {
+        val recyclerItems = mutableListOf<RecyclerItem>().run {
 
-            add(NotDiverseItem("Games", true))
+            add(RecyclerItem("Games", true))
             addAll(gamesRecyclerItems)
 
-            add(NotDiverseItem("Programming Languages", true))
+            add(RecyclerItem("Programming Languages", true))
             addAll(programmingLanguagesItems)
 
-            add(NotDiverseItem("Songs", true))
+            add(RecyclerItem("Songs", true))
             addAll(topSongsItems)
 
             this
         }
 
-        val adapter = NotDiverseRecyclerAdapter()
+        val adapter = DemoRecyclerAdapter()
 
         adapter.items = recyclerItems
 
@@ -43,10 +43,10 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    data class NotDiverseItem(val title: String, val isSticky: Boolean = false)
+    data class RecyclerItem(val title: String, val isSticky: Boolean = false)
 
-    class NotDiverseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        var items: List<NotDiverseItem> = listOf()
+    class DemoRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        var items: List<RecyclerItem> = listOf()
 
         override fun getItemCount(): Int = items.size
 

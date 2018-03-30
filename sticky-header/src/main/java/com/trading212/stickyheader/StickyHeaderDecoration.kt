@@ -12,7 +12,7 @@ import android.view.ViewGroup
  *
  * Only one sticky header at a time is supported for now.
  *
- * **Note** When removal of the [StickyHeaderDecoration] is needed only use [StickyHeaderDecoration.removeFromRecyclerView]
+ * **Note** When removal of the [StickyHeaderDecoration] is needed, **always** use [StickyHeaderDecoration.removeFromRecyclerView]
  * to clear touch and scroll listeners needed for the sticky creation to work
  *
  * Although not necessary usage of DiverseRecyclerAdapter simplifies the creation of sticky headers.
