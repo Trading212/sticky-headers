@@ -12,28 +12,21 @@ import com.trading212.stickyheader.StickyHeaderDecoration
 class GenericRecyclerViewDemoActivity : BaseActivity() {
     override fun fillRecyclerView() {
 
-        val gamesRecyclerItems = listOf(
-                "Demon Souls", "Bloodborne", "Overwatch", "Monter Hunter World", "God of War", "WoW", "LoL", "OSU!", "Horizon", "Zelda", "CS"
-        ).map { NotDiverseItem(it) }
+        val gamesRecyclerItems = generateGamesList().map { NotDiverseItem(it) }
 
-        val programmingLanguagesItems = listOf(
-                "JavaScript", "Swift", "Python", "Java", "C++", "Ruby", "Rust", "Lisp (EW.)", "Haskell", "F#", "SQL", "C#"
-        ).map { NotDiverseItem(it) }
+        val programmingLanguagesItems = generateProgrammingLanguagesList().map { NotDiverseItem(it) }
 
-        val topSongsItems = listOf(
-                "Rainbow Eyes", "Man on the silver mountain", "Blue Morning", "Human", "Try it out", "Sitting on the dock",
-                "Alexander Hamilton", "The Trooper", "Nemo", "The Islander", "Jukebox Hero"
-        ).map { NotDiverseItem(it) }
+        val topSongsItems = generateSongsList().map { NotDiverseItem(it) }
 
         val recyclerItems = mutableListOf<NotDiverseItem>().run {
 
-            add(NotDiverseItem("Top Games", true))
+            add(NotDiverseItem("Games", true))
             addAll(gamesRecyclerItems)
 
-            add(NotDiverseItem("Top Programming Languages", true))
+            add(NotDiverseItem("Programming Languages", true))
             addAll(programmingLanguagesItems)
 
-            add(NotDiverseItem("Top Songs", true))
+            add(NotDiverseItem("Songs", true))
             addAll(topSongsItems)
 
             this
@@ -85,7 +78,7 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
             }
         }
 
-        inner class StickyViewHolder(itemView: View) : TextViewHolder(itemView), StickyHeader<String> {
+        inner class StickyViewHolder(itemView: View) : TextViewHolder(itemView), StickyHeader {
             override fun stickyId() = items[adapterPosition].title
         }
 

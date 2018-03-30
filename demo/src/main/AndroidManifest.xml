@@ -26,6 +26,9 @@
         <activity
             android:name=".GenericRecyclerViewDemoActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".JavaStickyExampleActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

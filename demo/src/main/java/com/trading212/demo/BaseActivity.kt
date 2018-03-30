@@ -24,4 +24,15 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     abstract fun fillRecyclerView()
+
+    fun generateGamesList() = listOf("Demon Souls", "Bloodborne", "Overwatch", "Monter Hunter World", "God of War", "WoW", "LoL", "OSU!", "Horizon", "Zelda", "CS")
+
+    fun generateProgrammingLanguagesList() = listOf(
+            "JavaScript", "Swift", "Python", "Java", "C++", "Ruby", "Rust", "Lisp (EW.)", "Haskell", "F#", "SQL", "C#"
+    )
+
+    fun generateSongsList() = listOf(
+            "Rainbow Eyes", "Man on the silver mountain", "Blue Morning", "Human", "Try it out", "Sitting on the dock",
+            "Alexander Hamilton", "The Trooper", "Nemo", "The Islander", "Jukebox Hero"
+    )
 }

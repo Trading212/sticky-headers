@@ -19,16 +19,16 @@ import android.view.ViewGroup
  */
 class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDecoration() {
 
-    private val stickyHeadersMap: MutableMap<Comparable<*>, View?> = linkedMapOf()
+    private val stickyHeadersMap: MutableMap<Any, View?> = linkedMapOf()
 
     // Used for optimisation, creating new instances during draw calls are dangerous
-    private val stickyOffsets: MutableMap<Comparable<*>, Int> = hashMapOf()
+    private val stickyOffsets: MutableMap<Any, Int> = hashMapOf()
 
     private val onScrollListener: RecyclerView.OnScrollListener = OnScrollListener()
 
     private val onItemTouchListener: ItemTouchListener = ItemTouchListener()
 
-    private var currentStickyId: Comparable<*>? = null
+    private var currentStickyId: Any? = null
 
     private var scrollDeltaY: Int = 0
 
@@ -70,8 +70,8 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
                 .asSequence()
                 .map { recyclerView.getChildAt(it) }
                 .map(::viewToViewHolderPair)
-                .filter { it.second is StickyHeader<*> }
-                .map { it.first to it.second as StickyHeader<*> }
+                .filter { it.second is StickyHeader }
+                .map { it.first to it.second as StickyHeader }
                 .forEach {
                     val view = it.first
 
@@ -116,9 +116,9 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
         }
     }
 
-    private fun getStickyView(stickyId: Comparable<*>): View? = stickyHeadersMap[stickyId]
+    private fun getStickyView(stickyId: Any): View? = stickyHeadersMap[stickyId]
 
-    private fun createViewForSticky(stickyCandidatePair: Pair<View?, StickyHeader<*>>, recyclerView: RecyclerView): View? {
+    private fun createViewForSticky(stickyCandidatePair: Pair<View?, StickyHeader>, recyclerView: RecyclerView): View? {
 
         val view = stickyCandidatePair.first
         val stickyHeader = stickyCandidatePair.second

@@ -3,7 +3,7 @@ package com.trading212.stickyheader
 /**
  * @return the previous key for the given [currentKey] or [currentKey] if there is no previous key
  */
-fun MutableMap<Comparable<*>, *>.previousKey(currentKey: Comparable<*>): Comparable<*> {
+fun MutableMap<Any, *>.previousKey(currentKey: Any): Any {
 
     var previousIterationValue = currentKey
 

@@ -8,7 +8,8 @@ class MainActivity : BaseActivity() {
 
         val recyclerItems = listOf(
                 "Diverse Recycler Adapter Demo" to DiverseRecyclerAdapterDemoActivity::class.java,
-                "Generic Recycler Adapter Demo" to GenericRecyclerViewDemoActivity::class.java
+                "Generic Recycler Adapter Demo" to GenericRecyclerViewDemoActivity::class.java,
+                "Java Diverse Recycler Adapter Demo" to JavaStickyExampleActivity::class.java
         ).map { ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo(it.first, it.second)) }
 
         val adapter = DiverseRecyclerAdapter()

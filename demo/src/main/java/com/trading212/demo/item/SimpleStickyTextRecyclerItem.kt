@@ -20,15 +20,13 @@ class SimpleStickyTextRecyclerItem(title: String) : DiverseRecyclerAdapter.Recyc
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder = ViewHolder(inflater.inflate(R.layout.item_sticky_text, parent, false))
 
-    class ViewHolder(itemView: View) : DiverseRecyclerAdapter.ViewHolder<String>(itemView), StickyHeader<String> {
+    class ViewHolder(itemView: View) : DiverseRecyclerAdapter.ViewHolder<String>(itemView), StickyHeader {
 
         private val textView = findViewById<TextView>(R.id.textView)
 
         private var data: String? = null
 
-        override fun stickyId(): String {
-            return data ?: ""
-        }
+        override fun stickyId() = data ?: ""
 
         override fun bindTo(data: String?) {
 
