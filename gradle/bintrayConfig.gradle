@@ -1,0 +1,23 @@
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'sticky-headers'
+    organization = 'trading-212'
+
+    publishGroupId = 'com.trading212'
+    libraryName = 'StickyHeaders'
+    artifact = 'sticky-headers'
+
+    libraryDescription = 'A simple library for Sticky Header drawn with ItemDecoration'
+
+    siteUrl = 'https://github.com/Trading212/sticky-headers'
+    gitRepoUrl = 'https://github.com/Trading212/sticky-headers.git'
+    gitIssueTrackerUrl = 'https://github.com/Trading212/sticky-headers/issues'
+
+    developerId = 'trading212'
+    developerName = 'Trading 212'
+    developerEmail = 'petar.marinov@trading212.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}

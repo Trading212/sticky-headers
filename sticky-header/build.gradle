@@ -1,17 +1,15 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply from: "${rootDir}/gradle/bintrayConfig.gradle"
 apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
+
     compileSdkVersion compile_sdk_version
 
     defaultConfig {
         minSdkVersion min_sdk_version
-        targetSdkVersion target_sdk_version
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName libraryVersion
     }
 
     buildTypes {
@@ -30,3 +28,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply from: "${rootDir}/gradle/install.gradle"
+apply from: "${rootDir}/gradle/bintray.gradle"
