@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/trading-212/maven/sticky-headers/images/download.svg) ](https://bintray.com/trading-212/maven/sticky-headers/_latestVersion)
+
 # Sticky Headers Item Decoration
 
 A simple RecyclerView ItemDecoration that draws sticky headers with minimal ceremony and effort.
@@ -6,7 +8,9 @@ A simple RecyclerView ItemDecoration that draws sticky headers with minimal cere
 
 ## Installation
 
-Pending release. Feel free to checkout the project and use as a module until official release.
+```
+implementation 'com.trading212:sticky-headers:0.1.0'
+```
 
 ## Getting Started
 
