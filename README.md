@@ -14,41 +14,22 @@ implementation 'com.trading212:sticky-headers:0.1.0'
 
 ## Getting Started
 
-It is only needed for your ViewHolder to implement `StickyHeader` and use a different item type for your Sticky Headers, because they are different items
+It is only needed for your ViewHolder to implement `StickyHeader` and return a **unique** `stickyId`
 
 ## Adapter
-```kotlin
-data class NotDiverseItem(val title: String, val isSticky: Boolean = false)
-
-class NotDiverseRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var items: List<NotDiverseItem> = listOf()
-    
-    // Important part - return a different item type for the sticky item 
-    override fun getItemViewType(position: Int) =
-        if (items[position].isSticky) {
-            STICKY_ITEM_TYPE
-        } else {
-            TEXT_ITEM_TYPE
-        }
-        
-    companion object {
-        val STICKY_ITEM_TYPE = ItemType.STICKY.ordinal
-
-        val TEXT_ITEM_TYPE = ItemType.SIMPLE_TEXT.ordinal
-    }
-    
-    ...
-}
-```
+There is nothing special that has to be done in the adapter
 
 ## ViewHolder
+
+It is important to return **the same unique** `stickyId`. The data model of the cell is in most cases appropriate
+
 ```kotlin
 class StickyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), StickyHeader {
     override fun stickyId() = items[adapterPosition].title
 }
 ```
 
-Although it's not needed, the usage of [DiverseRecyclerAdapter](https://github.com/Trading212/DiverseRecyclerAdapter) simplifies setup and separates the logic of each item type in the RecyclerView (in our case that would be a StickyHeader item type and a text item type)
+Although it's not needed, the usage of [DiverseRecyclerAdapter](https://github.com/Trading212/DiverseRecyclerAdapter) simplifies setup and separates the logic of each item type in the RecyclerView.
 
 ## Tying it all together
 
@@ -64,39 +45,44 @@ StickyHeaderDecoration.removeFromRecyclerView(recyclerView, stickyHeaderDecorati
 
 Full Example
 ```kotlin
+
+data class RecyclerItem(val title: String, val isSticky: Boolean = false)
+
+...
+
 val gamesRecyclerItems = listOf(
         "Demon Souls", "Bloodborne", "Overwatch", "Monter Hunter World", "God of War", "WoW", "LoL", "OSU!", "Horizon", "Zelda", "CS"
-).map { NotDiverseItem(it) }
+).map { RecyclerItem(it) }
 
 val programmingLanguagesItems = listOf(
         "JavaScript", "Swift", "Python", "Java", "C++", "Ruby", "Rust", "Lisp (EW.)", "Haskell", "F#", "SQL", "C#"
-).map { NotDiverseItem(it) }
+).map { RecyclerItem(it) }
 
 val topSongsItems = listOf(
     "Rainbow Eyes", "Man on the silver mountain", "Blue Morning", "Human", "Try it out", "Sitting on the dock",
     "Alexander Hamilton", "The Trooper", "Nemo", "The Islander", "Jukebox Hero"
-).map { NotDiverseItem(it) }
+).map { RecyclerItem(it) }
 
-val recyclerItems = mutableListOf<NotDiverseItem>().run {
-    add(NotDiverseItem("Top Games", true))
+val recyclerItems = mutableListOf<RecyclerItem>().run {
+
+    add(RecyclerItem("Games", true))
     addAll(gamesRecyclerItems)
 
-    add(NotDiverseItem("Top Programming Languages", true))
+    add(RecyclerItem("Programming Languages", true))
     addAll(programmingLanguagesItems)
 
-    add(NotDiverseItem("Top Songs", true))
+    add(RecyclerItem("Songs", true))
     addAll(topSongsItems)
 
     this
 }
 
-val adapter = NotDiverseRecyclerAdapter()
+val adapter = DemoRecyclerAdapter()
 
 adapter.items = recyclerItems
 
 recyclerView.adapter = adapter
 
-// Adding the sticky header
 recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView))
 
 adapter.notifyDataSetChanged()

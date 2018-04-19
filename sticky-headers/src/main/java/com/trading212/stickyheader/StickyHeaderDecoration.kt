@@ -32,17 +32,6 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
 
     private var scrollDeltaY: Int = 0
 
-    private var isScrollTooFast = false
-
-    /**
-     * When scrolling/flinging really fast the push animation is not visible at all
-     * and is not needed. You can set this to a higher number if you want the push animation to be run.
-     * This corresponds to [RecyclerView.OnScrollListener.onScrolled].dy
-     *
-     * @property fastScrollThreshold
-     */
-    var fastScrollThreshold = FAST_SCROLL_THRESHOLD
-
     init {
         recyclerView.addOnItemTouchListener(onItemTouchListener)
 
@@ -55,43 +44,41 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
             return
         }
 
-        fun viewToViewHolderPair(view: View?): Pair<View?, RecyclerView.ViewHolder?> {
-            return view to if (view != null) {
-                recyclerView.findContainingViewHolder(view)
-            } else {
-                null
-            }
-        }
-
         stickyOffsets.clear()
 
         // Reversed order to try to catch views that can disappear before we reach them
-        ((recyclerView.childCount - 1) downTo 0)
-                .asSequence()
+        ((recyclerView.childCount - 1) downTo 0).asSequence()
+
+                // Index to View
                 .map { recyclerView.getChildAt(it) }
-                .map(::viewToViewHolderPair)
-                .filter { it.second is StickyHeader }
-                .map { it.first to it.second as StickyHeader }
-                .forEach {
-                    val view = it.first
 
-                    val stickyId = it.second.stickyId()
+                // We don't need null views
+                .filterNotNull()
 
-                    val viewTop = view?.top ?: -1
+                // Pair the view to its ViewHolder and try to cast to StickyHeader
+                .map { it to recyclerView.findContainingViewHolder(it) as? StickyHeader }
 
-                    stickyOffsets[stickyId] = view?.top ?: 0
+                .forEach { viewToViewHolderPair ->
+
+                    val view = viewToViewHolderPair.first
+                    val stickyHeaderViewHolder = viewToViewHolderPair.second ?: return@forEach
+
+                    val stickyId = stickyHeaderViewHolder.stickyId
+
+                    val viewTop = view.top
+
+                    stickyOffsets[stickyId] = view.top
 
                     // If view is out of screen or the next frame will probably be
                     if (viewTop < STICKY_THRESHOLD || scrollDeltaY > viewTop) {
-
                         currentStickyId = stickyId
 
                         if (!stickyHeadersMap.contains(stickyId)) {
-                            createViewForSticky(it, recyclerView)
+                            createViewForSticky(view, stickyHeaderViewHolder, recyclerView)
                         }
                     } else {
                         if (currentStickyId == stickyId) {
-                            currentStickyId = stickyHeadersMap.previousKey(stickyId)
+                            currentStickyId = previousStickyId(stickyId)
                         }
                     }
                 }
@@ -100,15 +87,13 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
             val currentStickyView = getStickyView(currentStickyId) ?: return
             val currentStickyHeight = currentStickyView.height
 
-            if (!isScrollTooFast) {
-                val candidateTop = stickyOffsets.asSequence().lastOrNull { it.value in 1..currentStickyHeight }
+            val candidateTop = stickyOffsets.asSequence().lastOrNull { it.value in 0..currentStickyHeight }
 
-                if (candidateTop != null) {
-                    val currentMargin = (currentStickyHeight - candidateTop.value).toFloat()
+            if (candidateTop != null) {
+                val currentMargin = (currentStickyHeight - candidateTop.value).toFloat()
 
-                    if (currentMargin < currentStickyHeight) {
-                        canvas.translate(0f, -currentMargin)
-                    }
+                if (currentMargin < currentStickyHeight) {
+                    canvas.translate(0f, -currentMargin)
                 }
             }
 
@@ -118,29 +103,28 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
 
     private fun getStickyView(stickyId: Any): View? = stickyHeadersMap[stickyId]
 
-    private fun createViewForSticky(stickyCandidatePair: Pair<View?, StickyHeader>, recyclerView: RecyclerView): View? {
+    private fun createViewForSticky(stickyView: View, stickyViewHolder: StickyHeader, recyclerView: RecyclerView): View? {
 
-        val view = stickyCandidatePair.first
-        val stickyHeader = stickyCandidatePair.second
-
-        val stickyId = stickyHeader.stickyId()
-        val stickyItemType = (stickyHeader as RecyclerView.ViewHolder).itemViewType
+        val stickyId = stickyViewHolder.stickyId
+        val stickyItemType = (stickyViewHolder as RecyclerView.ViewHolder).itemViewType
 
         return stickyHeadersMap.getOrPut(stickyId) {
             val adapter = recyclerView.adapter
 
             val newStickyViewHolder = adapter.onCreateViewHolder(recyclerView, stickyItemType)
 
-            adapter.onBindViewHolder(newStickyViewHolder, (stickyHeader as RecyclerView.ViewHolder).adapterPosition)
+            adapter.onBindViewHolder(newStickyViewHolder, (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition)
 
             val widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.measuredWidth, View.MeasureSpec.EXACTLY)
             val heightSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.measuredHeight, View.MeasureSpec.UNSPECIFIED)
 
             val viewWidth = ViewGroup.getChildMeasureSpec(widthSpec,
-                    recyclerView.paddingLeft + recyclerView.paddingRight, view?.layoutParams?.width ?: 0)
+                    recyclerView.paddingLeft + recyclerView.paddingRight, stickyView.layoutParams?.width
+                    ?: 0)
 
             val viewHeight = ViewGroup.getChildMeasureSpec(heightSpec,
-                    recyclerView.paddingTop + recyclerView.paddingBottom, view?.layoutParams?.height ?: 0)
+                    recyclerView.paddingTop + recyclerView.paddingBottom, stickyView.layoutParams?.height
+                    ?: 0)
 
             val newStickyItemView = newStickyViewHolder.itemView
             newStickyItemView.measure(viewWidth, viewHeight)
@@ -150,13 +134,39 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
         }
     }
 
+    private fun previousStickyId(currentKey: Any): Any {
+
+        var previousIterationValue = currentKey
+
+        val keys = stickyHeadersMap.keys
+
+        for (key in keys) {
+            if (currentKey == key) {
+                break
+            }
+
+            previousIterationValue = key
+        }
+
+        if (previousIterationValue == keys.last()) {
+            previousIterationValue = currentKey
+        }
+
+        return previousIterationValue
+    }
+
     private inner class ItemTouchListener : RecyclerView.SimpleOnItemTouchListener() {
-        override fun onInterceptTouchEvent(rv: RecyclerView?, e: MotionEvent?): Boolean {
+
+        override fun onInterceptTouchEvent(rv: RecyclerView?, event: MotionEvent): Boolean {
+
+            if (event.action == MotionEvent.ACTION_MOVE) {
+                return false
+            }
 
             currentStickyId?.let {
 
                 val currentStickyViewHeight = getStickyView(it)?.height ?: 0
-                val eventY = e?.y ?: 0f
+                val eventY = event.y
 
                 return eventY <= currentStickyViewHeight
             }
@@ -168,14 +178,12 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
             scrollDeltaY = dy
-            isScrollTooFast = dy > fastScrollThreshold
         }
     }
 
     companion object {
-        private const val STICKY_THRESHOLD = 5
 
-        private const val FAST_SCROLL_THRESHOLD = 230
+        private val STICKY_THRESHOLD = dpToPx(2f)
 
         /**
          * Use this to remove the [stickyHeaderDecoration] from the [recyclerView], also clears [RecyclerView] listeners

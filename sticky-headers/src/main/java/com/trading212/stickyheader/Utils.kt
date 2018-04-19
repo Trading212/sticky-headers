@@ -1,23 +1,7 @@
 package com.trading212.stickyheader
 
-/**
- * @return the previous key for the given [currentKey] or [currentKey] if there is no previous key
- */
-fun MutableMap<Any, *>.previousKey(currentKey: Any): Any {
+import android.content.res.Resources
 
-    var previousIterationValue = currentKey
-
-    for (key in keys) {
-        if (currentKey == key) {
-            break
-        }
-
-        previousIterationValue = key
-    }
-
-    if (previousIterationValue == keys.last()) {
-        previousIterationValue = currentKey
-    }
-
-    return previousIterationValue
+fun dpToPx(dp: Float): Int {
+    return (dp * Resources.getSystem().displayMetrics.density).toInt()
 }
