@@ -157,9 +157,10 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
 
     private inner class ItemTouchListener : RecyclerView.SimpleOnItemTouchListener() {
 
-        override fun onInterceptTouchEvent(rv: RecyclerView?, event: MotionEvent): Boolean {
+        override fun onInterceptTouchEvent(recyclerView: RecyclerView, event: MotionEvent): Boolean {
 
-            if (event.action == MotionEvent.ACTION_MOVE) {
+            if (event.action == MotionEvent.ACTION_MOVE ||
+                    (event.action == MotionEvent.ACTION_UP && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING)) {
                 return false
             }
 
