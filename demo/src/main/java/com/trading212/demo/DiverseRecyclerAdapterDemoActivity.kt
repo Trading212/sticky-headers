@@ -6,6 +6,7 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 import com.trading212.stickyheader.StickyHeaderDecoration
 
 class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
+
     override fun fillRecyclerView() {
         val adapter = DiverseRecyclerAdapter()
 
@@ -24,9 +25,7 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
         adapter.addItem(SimpleStickyTextRecyclerItem("Songs"), false)
         adapter.addItems(topSongsItems, false)
 
-        val stickyHeaderDecoration = StickyHeaderDecoration(recyclerView)
-
-        recyclerView.addItemDecoration(stickyHeaderDecoration)
+        recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView))
 
         recyclerView.adapter = adapter
 

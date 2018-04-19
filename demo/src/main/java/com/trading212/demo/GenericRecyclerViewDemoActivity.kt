@@ -71,7 +71,6 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is TextViewHolder) {
-
                 holder.itemView?.isClickable = true
 
                 holder.textView.text = items[position].title
@@ -79,7 +78,8 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
         }
 
         inner class StickyViewHolder(itemView: View) : TextViewHolder(itemView), StickyHeader {
-            override fun stickyId() = items[adapterPosition].title
+            override val stickyId: String
+                get() = items[adapterPosition].title
         }
 
         open inner class TextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
