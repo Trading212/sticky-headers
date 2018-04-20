@@ -44,7 +44,7 @@ public class JavaStickyExampleActivity extends BaseActivity {
 
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addItemDecoration(new StickyHeaderDecoration(recyclerView, adapter));
+        recyclerView.addItemDecoration(new StickyHeaderDecoration());
 
         adapter.notifyDataSetChanged();
     }

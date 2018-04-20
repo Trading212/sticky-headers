@@ -28,7 +28,7 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
         adapter.addItem(SimpleStickyTextRecyclerItem("Songs"), false)
         adapter.addItems(topSongsItems, false)
 
-        stickyHeaderDecoration = StickyHeaderDecoration(recyclerView, adapter)
+        stickyHeaderDecoration = StickyHeaderDecoration()
         recyclerView.addItemDecoration(stickyHeaderDecoration)
 
         recyclerView.adapter = adapter
