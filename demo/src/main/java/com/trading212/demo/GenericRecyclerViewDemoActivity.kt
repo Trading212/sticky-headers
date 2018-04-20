@@ -38,7 +38,7 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
 
         recyclerView.adapter = adapter
 
-        recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView))
+        recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView, adapter))
 
         adapter.notifyDataSetChanged()
     }
