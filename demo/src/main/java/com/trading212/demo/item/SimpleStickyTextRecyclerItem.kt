@@ -32,7 +32,7 @@ class SimpleStickyTextRecyclerItem(title: String) :
         override fun bindTo(data: String?) {
             this.data = data
 
-            textView?.text = data ?: ""
+            textView?.text = (data ?: "") + (System.currentTimeMillis())
         }
     }
 }

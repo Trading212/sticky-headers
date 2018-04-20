@@ -12,36 +12,67 @@ import android.view.ViewGroup
  *
  * Only one sticky header at a time is supported for now.
  *
- * **Note** When removal of the [StickyHeaderDecoration] is needed, **always** use [StickyHeaderDecoration.removeFromRecyclerView]
+ * **Note** When removal of the [StickyHeaderDecoration] is needed, **always** use [StickyHeaderDecoration.release]
  * to clear touch and scroll listeners needed for the sticky creation to work
  *
  * Although not necessary usage of DiverseRecyclerAdapter simplifies the creation of sticky headers.
  */
-class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDecoration() {
+class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
-    private val stickyHeadersMap: MutableMap<Any, View?> = linkedMapOf()
+    private val stickyHeadersMap: MutableMap<Any, RecyclerView.ViewHolder?> = linkedMapOf()
 
     // Used for optimisation, creating new instances during draw calls are dangerous
     private val stickyOffsets: MutableMap<Any, Int> = hashMapOf()
+
+    private val adapterPositionsMap: MutableMap<Any, Int> = hashMapOf()
 
     private val onScrollListener: RecyclerView.OnScrollListener = OnScrollListener()
 
     private val onItemTouchListener: ItemTouchListener = ItemTouchListener()
 
+    private var adapterObserver: AdapterObserver? = null
+
+    private var recyclerView: RecyclerView? = null
+
+    private var adapter: RecyclerView.Adapter<*>? = null
+
     private var currentStickyId: Any? = null
 
     private var scrollDeltaY: Int = 0
 
-    init {
-        recyclerView.addOnItemTouchListener(onItemTouchListener)
+    /**
+     * Call this when you need to update the sticky headers without notifying the [RecyclerView.Adapter]
+     * for changes
+     */
+    fun updateStickyHeaders() {
 
-        recyclerView.addOnScrollListener(onScrollListener)
+        stickyHeadersMap.forEach { entry: Map.Entry<Any, RecyclerView.ViewHolder?> ->
+            val viewHolder = entry.value ?: return@forEach
+            val adapterPosition = adapterPositionsMap[viewHolder] ?: return@forEach
+
+            updateStickyHeader(viewHolder, adapterPosition)
+        }
     }
 
     override fun onDrawOver(canvas: Canvas?, recyclerView: RecyclerView?, state: RecyclerView.State?) {
 
         if (canvas == null || recyclerView == null) {
             return
+        }
+
+        if (this.recyclerView == null) {
+            this.recyclerView = recyclerView
+        }
+
+        if (adapter !== recyclerView.adapter) {
+
+            if (adapter != null) {
+                release()
+            }
+
+            adapter = recyclerView.adapter
+
+            registerListeners()
         }
 
         stickyOffsets.clear()
@@ -101,19 +132,37 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
         }
     }
 
-    private fun getStickyView(stickyId: Any): View? = stickyHeadersMap[stickyId]
+    private fun registerListeners() {
 
-    private fun createViewForSticky(stickyView: View, stickyViewHolder: StickyHeader, recyclerView: RecyclerView): View? {
+        recyclerView?.apply {
+            addOnItemTouchListener(onItemTouchListener)
+
+            addOnScrollListener(onScrollListener)
+        }
+
+        adapter?.apply {
+            if (adapterObserver == null) {
+                registerAdapterDataObserver(AdapterObserver().also {
+                    adapterObserver = it
+                })
+            }
+        }
+    }
+
+    private fun getStickyView(stickyId: Any): View? = stickyHeadersMap[stickyId]?.itemView
+
+    private fun createViewForSticky(stickyView: View, stickyViewHolder: StickyHeader, recyclerView: RecyclerView) {
 
         val stickyId = stickyViewHolder.stickyId
         val stickyItemType = (stickyViewHolder as RecyclerView.ViewHolder).itemViewType
 
-        return stickyHeadersMap.getOrPut(stickyId) {
+        stickyHeadersMap.getOrPut(stickyId) {
             val adapter = recyclerView.adapter
 
             val newStickyViewHolder = adapter.onCreateViewHolder(recyclerView, stickyItemType)
 
-            adapter.onBindViewHolder(newStickyViewHolder, (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition)
+            val adapterPosition = (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition
+            adapter.onBindViewHolder(newStickyViewHolder, adapterPosition)
 
             val widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.measuredWidth, View.MeasureSpec.EXACTLY)
             val heightSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.measuredHeight, View.MeasureSpec.UNSPECIFIED)
@@ -130,8 +179,16 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
             newStickyItemView.measure(viewWidth, viewHeight)
             newStickyItemView.layout(0, 0, newStickyItemView.measuredWidth, newStickyItemView.measuredHeight)
 
-            newStickyItemView
+            adapterPositionsMap[newStickyViewHolder] = adapterPosition
+
+            newStickyViewHolder
         }
+    }
+
+    private fun updateStickyHeader(viewHolder: RecyclerView.ViewHolder, adapterPosition: Int) {
+        val adapter = recyclerView?.adapter ?: return
+
+        adapter.onBindViewHolder(viewHolder, adapterPosition)
     }
 
     private fun previousStickyId(currentKey: Any): Any {
@@ -182,19 +239,46 @@ class StickyHeaderDecoration(recyclerView: RecyclerView) : RecyclerView.ItemDeco
         }
     }
 
+    private inner class AdapterObserver : RecyclerView.AdapterDataObserver() {
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+
+            val changedRange = positionStart..(positionStart + itemCount)
+            stickyHeadersMap.forEach { entry ->
+                val viewHolder = entry.value ?: return@forEach
+                val adapterPosition = adapterPositionsMap[viewHolder] ?: return@forEach
+
+                if (adapterPosition in changedRange) {
+                    updateStickyHeader(viewHolder, adapterPosition)
+                }
+            }
+        }
+
+        override fun onChanged() {
+            updateStickyHeaders()
+        }
+    }
+
     companion object {
 
         private val STICKY_THRESHOLD = dpToPx(2f)
 
         /**
-         * Use this to remove the [stickyHeaderDecoration] from the [recyclerView], also clears [RecyclerView] listeners
+         * Use this to remove the [StickyHeaderDecoration] from the [recyclerView], also clears [RecyclerView] listeners
          * previously set.
          */
-        fun removeFromRecyclerView(recyclerView: RecyclerView, stickyHeaderDecoration: StickyHeaderDecoration) {
-            recyclerView.removeItemDecoration(stickyHeaderDecoration)
+        fun StickyHeaderDecoration.release() {
 
-            recyclerView.removeOnScrollListener(stickyHeaderDecoration.onScrollListener)
-            recyclerView.removeOnItemTouchListener(stickyHeaderDecoration.onItemTouchListener)
+            recyclerView?.also {
+                it.removeItemDecoration(this)
+
+                it.removeOnScrollListener(this.onScrollListener)
+                it.removeOnItemTouchListener(this.onItemTouchListener)
+
+                val adapterObserver = this.adapterObserver ?: return
+
+                it.adapter.unregisterAdapterDataObserver(adapterObserver)
+            }
         }
     }
 }

@@ -35,12 +35,12 @@ Although it's not needed, the usage of [DiverseRecyclerAdapter](https://github.c
 
 Adding the sticky header
 ```kotlin
-recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView))
+recyclerView.addItemDecoration(StickyHeaderDecoration())
 ```
 
 Removing the sticky header. Due to the need to add additional listeners to the RecyclerView you should **always** use the static helper method, so we can clean up after ourselves
 ```kotlin
-StickyHeaderDecoration.removeFromRecyclerView(recyclerView, stickyHeaderDecoration)
+stickyHeaderDecoration.release()
 ```
 
 Full Example
@@ -83,7 +83,7 @@ adapter.items = recyclerItems
 
 recyclerView.adapter = adapter
 
-recyclerView.addItemDecoration(StickyHeaderDecoration(recyclerView))
+recyclerView.addItemDecoration(StickyHeaderDecoration())
 
 adapter.notifyDataSetChanged()
 ```
