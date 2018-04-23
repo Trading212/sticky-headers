@@ -48,7 +48,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
         stickyHeadersMap.forEach { entry: Map.Entry<Any, RecyclerView.ViewHolder?> ->
             val viewHolder = entry.value ?: return@forEach
-            val adapterPosition = adapterPositionsMap[viewHolder] ?: return@forEach
+            val adapterPosition = adapterPositionsMap[entry.key] ?: return@forEach
 
             updateStickyHeader(viewHolder, adapterPosition)
         }
@@ -97,6 +97,11 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
                     val stickyId = stickyHeaderViewHolder.stickyId
 
                     val viewTop = view.top
+
+                    val adapterPosition = (stickyHeaderViewHolder as RecyclerView.ViewHolder).adapterPosition
+                    if (adapterPosition != -1) {
+                        adapterPositionsMap[stickyId] = adapterPosition
+                    }
 
                     stickyOffsets[stickyId] = view.top
 
@@ -156,12 +161,13 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         val stickyId = stickyViewHolder.stickyId
         val stickyItemType = (stickyViewHolder as RecyclerView.ViewHolder).itemViewType
 
+        val adapterPosition = (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition
+
         stickyHeadersMap.getOrPut(stickyId) {
             val adapter = recyclerView.adapter
 
             val newStickyViewHolder = adapter.onCreateViewHolder(recyclerView, stickyItemType)
 
-            val adapterPosition = (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition
             adapter.onBindViewHolder(newStickyViewHolder, adapterPosition)
 
             val widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.measuredWidth, View.MeasureSpec.EXACTLY)
@@ -179,8 +185,6 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
             newStickyItemView.measure(viewWidth, viewHeight)
             newStickyItemView.layout(0, 0, newStickyItemView.measuredWidth, newStickyItemView.measuredHeight)
 
-            adapterPositionsMap[newStickyViewHolder] = adapterPosition
-
             newStickyViewHolder
         }
     }
@@ -188,28 +192,21 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
     private fun updateStickyHeader(viewHolder: RecyclerView.ViewHolder, adapterPosition: Int) {
         val adapter = recyclerView?.adapter ?: return
 
-        adapter.onBindViewHolder(viewHolder, adapterPosition)
+        if (adapterPosition != -1) {
+            adapter.onBindViewHolder(viewHolder, adapterPosition)
+        }
     }
 
-    private fun previousStickyId(currentKey: Any): Any {
+    private fun previousStickyId(currentKey: Any): Any? {
 
-        var previousIterationValue = currentKey
+//        var previousIterationValue = currentKey
+        val currentAdapterPosition = adapterPositionsMap[currentKey] ?: 0
 
-        val keys = stickyHeadersMap.keys
+        return adapterPositionsMap.asSequence().findLast {
+            val otherAdapterPosition = adapterPositionsMap[it.key] ?: 0
 
-        for (key in keys) {
-            if (currentKey == key) {
-                break
-            }
-
-            previousIterationValue = key
-        }
-
-        if (previousIterationValue == keys.last()) {
-            previousIterationValue = currentKey
-        }
-
-        return previousIterationValue
+            otherAdapterPosition < currentAdapterPosition
+        }?.key
     }
 
     private inner class ItemTouchListener : RecyclerView.SimpleOnItemTouchListener() {
@@ -246,7 +243,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
             val changedRange = positionStart..(positionStart + itemCount)
             stickyHeadersMap.forEach { entry ->
                 val viewHolder = entry.value ?: return@forEach
-                val adapterPosition = adapterPositionsMap[viewHolder] ?: return@forEach
+                val adapterPosition = adapterPositionsMap[entry.key] ?: return@forEach
 
                 if (adapterPosition in changedRange) {
                     updateStickyHeader(viewHolder, adapterPosition)
@@ -255,7 +252,13 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         }
 
         override fun onChanged() {
-            updateStickyHeaders()
+
+            stickyHeadersMap.clear()
+            stickyOffsets.clear()
+            adapterPositionsMap.clear()
+
+//            currentStickyId = null
+//            updateStickyHeaders()
         }
     }
 
