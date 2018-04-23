@@ -37,8 +37,6 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
             override fun onItemClicked(v: View, position: Int) {
 
                 adapter.insertItem(0, SimpleTextRecyclerItem("new text ${System.currentTimeMillis()}"), false)
-//                adapter.insertItem(0, SimpleStickyTextRecyclerItem("New Sticky ${System.currentTimeMillis()}"), false)
-//                adapter.insertItem(1, SimpleTextRecyclerItem("new text ${System.currentTimeMillis()}"), false)
 
                 adapter.notifyDataSetChanged()
             }

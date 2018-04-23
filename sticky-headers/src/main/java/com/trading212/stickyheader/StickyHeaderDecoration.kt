@@ -40,6 +40,8 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
     private var scrollDeltaY: Int = 0
 
+    private var isUpdatePending = false
+
     /**
      * Call this when you need to update the sticky headers without notifying the [RecyclerView.Adapter]
      * for changes
@@ -163,6 +165,10 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
         val adapterPosition = (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition
 
+        if (isUpdatePending) {
+            stickyHeadersMap.remove(stickyId)
+        }
+
         stickyHeadersMap.getOrPut(stickyId) {
             val adapter = recyclerView.adapter
 
@@ -187,6 +193,8 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
             newStickyViewHolder
         }
+
+        isUpdatePending = false
     }
 
     private fun updateStickyHeader(viewHolder: RecyclerView.ViewHolder, adapterPosition: Int) {
@@ -253,12 +261,16 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
         override fun onChanged() {
 
-            stickyHeadersMap.clear()
-            stickyOffsets.clear()
-            adapterPositionsMap.clear()
+            val currentSticky = stickyHeadersMap.remove(currentStickyId)
+
+            currentStickyId?.let {
+                stickyHeadersMap.put(it, currentSticky)
+            }
+
+            isUpdatePending = true
 
 //            currentStickyId = null
-//            updateStickyHeaders()
+            updateStickyHeaders()
         }
     }
 
