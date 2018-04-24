@@ -35,9 +35,6 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
 
         adapter.onItemActionListener = object : DiverseRecyclerAdapter.OnItemActionListener() {
             override fun onItemClicked(v: View, position: Int) {
-
-                adapter.insertItem(0, SimpleTextRecyclerItem("new text ${System.currentTimeMillis()}"), false)
-
                 adapter.notifyDataSetChanged()
             }
         }
