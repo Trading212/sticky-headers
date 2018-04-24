@@ -265,6 +265,22 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
             }
         }
 
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            onChanged()
+        }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            onChanged()
+        }
+
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            onChanged()
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            onChanged()
+        }
+
         override fun onChanged() {
 
             updateStickyHeaders()
