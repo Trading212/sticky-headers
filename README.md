@@ -9,7 +9,7 @@ A simple RecyclerView ItemDecoration that draws sticky headers with minimal cere
 ## Installation
 
 ```
-implementation 'com.trading212:sticky-headers:0.1.3'
+implementation 'com.trading212:sticky-headers:0.1.4'
 ```
 
 ## Getting Started
