@@ -54,6 +54,14 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         }
     }
 
+    /**
+     * Clears the sticky headers, not that they will not be redrawn until they appear on screen again
+     */
+    fun clear() {
+        stickyHeadersMap.clear()
+        stickyOffsets.clear()
+    }
+
     override fun onDrawOver(canvas: Canvas?, recyclerView: RecyclerView?, state: RecyclerView.State?) {
 
         if (canvas == null || recyclerView == null) {
@@ -267,6 +275,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
          * Use this to remove the [StickyHeaderDecoration] from the [recyclerView], also clears [RecyclerView] listeners
          * previously set.
          */
+        @JvmStatic
         fun StickyHeaderDecoration.release() {
 
             recyclerView?.also {
