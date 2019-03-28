@@ -10,6 +10,8 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
 
     private lateinit var stickyHeaderDecoration: StickyHeaderDecoration
 
+    private var stickyIdsCounter = 0
+
     override fun fillRecyclerView() {
         val adapter = DiverseRecyclerAdapter()
 
@@ -19,13 +21,13 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
 
         val topSongsItems = generateSongsList().map { SimpleTextRecyclerItem(it) }
 
-        adapter.addItem(SimpleStickyTextRecyclerItem("Games"), false)
+        adapter.addItem(SimpleStickyTextRecyclerItem(SimpleStickyTextRecyclerItem.StickyData("Games", ++stickyIdsCounter)), false)
         adapter.addItems(gamesRecyclerItems, false)
 
-        adapter.addItem(SimpleStickyTextRecyclerItem("Programming Languages"), false)
+        adapter.addItem(SimpleStickyTextRecyclerItem(SimpleStickyTextRecyclerItem.StickyData("Programming Languages", ++stickyIdsCounter)), false)
         adapter.addItems(programmingLanguagesItems, false)
 
-        adapter.addItem(SimpleStickyTextRecyclerItem("Songs"), false)
+        adapter.addItem(SimpleStickyTextRecyclerItem(SimpleStickyTextRecyclerItem.StickyData("Songs", ++stickyIdsCounter)), false)
         adapter.addItems(topSongsItems, false)
 
         stickyHeaderDecoration = StickyHeaderDecoration()
@@ -35,7 +37,17 @@ class DiverseRecyclerAdapterDemoActivity : BaseActivity() {
 
         adapter.onItemActionListener = object : DiverseRecyclerAdapter.OnItemActionListener() {
             override fun onItemClicked(v: View, position: Int) {
-                adapter.notifyDataSetChanged()
+
+                adapter.insertItem(0,
+                        SimpleStickyTextRecyclerItem(SimpleStickyTextRecyclerItem.StickyData("Item${System.currentTimeMillis()}", ++stickyIdsCounter)))
+                adapter.insertItem(0, SimpleTextRecyclerItem("Item${System.currentTimeMillis()}"))
+            }
+
+            override fun onItemLongClicked(v: View, position: Int): Boolean {
+
+                adapter.removeItem(1)
+
+                return super.onItemLongClicked(v, position)
             }
         }
 
