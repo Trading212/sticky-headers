@@ -1,11 +1,9 @@
 package com.trading212.demo.item
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.trading212.demo.DiverseRecyclerAdapterDemoActivity
 import com.trading212.demo.R
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 import com.trading212.stickyheader.StickyHeader
@@ -36,19 +34,6 @@ class SimpleStickyTextRecyclerItem(stickyData: StickyData) :
             this.data = data
 
             textView?.text = data.text
-        }
-
-        @SuppressLint("SetTextI18n")
-        override fun updateWith(data: StickyData?, update: Any) {
-            super.updateWith(data, update)
-
-            data ?: return
-
-            data.text = this.data.text + (update as DiverseRecyclerAdapterDemoActivity.Payload).counter
-
-            this.data = data
-
-            textView?.text = this.data.text
         }
     }
 
