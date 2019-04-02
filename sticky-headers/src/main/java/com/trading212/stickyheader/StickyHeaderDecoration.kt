@@ -118,7 +118,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
                     stickyOffsets[stickyId] = view.top
 
                     // New Sticky incoming
-                    if (viewTop < STICKY_THRESHOLD || scrollDeltaY > viewTop) {
+                    if (viewTop < STICKY_THRESHOLD || (scrollDeltaY > viewTop && recyclerView.canScrollVertically(1))) {
 
                         if (stickiesStack.isEmpty() || stickiesStack.peek() != stickyId) {
                             stickiesStack.push(stickyId)
