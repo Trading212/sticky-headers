@@ -8,31 +8,38 @@ import com.trading212.demo.R
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 import com.trading212.stickyheader.StickyHeader
 
-class SimpleStickyTextRecyclerItem(title: String) :
-        DiverseRecyclerAdapter.RecyclerItem<String, SimpleStickyTextRecyclerItem.ViewHolder>() {
-    companion object {
-        private val TYPE = ItemType.STICKY.ordinal
-    }
+class SimpleStickyTextRecyclerItem(stickyData: StickyData) :
+        DiverseRecyclerAdapter.RecyclerItem<SimpleStickyTextRecyclerItem.StickyData, SimpleStickyTextRecyclerItem.ViewHolder>() {
 
-    override val data = title
+    override val data = stickyData
 
     override val type = TYPE
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder = ViewHolder(
             inflater.inflate(R.layout.item_sticky_text, parent, false))
 
-    class ViewHolder(itemView: View) : DiverseRecyclerAdapter.ViewHolder<String>(itemView), StickyHeader {
+    class ViewHolder(itemView: View) : DiverseRecyclerAdapter.ViewHolder<StickyData>(itemView), StickyHeader {
+
         override val stickyId
-            get() = data ?: ""
+            get() = data.headerId
 
         private val textView = findViewById<TextView>(R.id.textView)
 
-        private var data: String? = null
+        private lateinit var data: StickyData
 
-        override fun bindTo(data: String?) {
+        override fun bindTo(data: StickyData?) {
+
+            data ?: return
+
             this.data = data
 
-            textView?.text = (data ?: "") + (System.currentTimeMillis())
+            textView?.text = data.text
         }
     }
+
+    companion object {
+        private val TYPE = ItemType.STICKY.ordinal
+    }
+
+    class StickyData(var text: String, val headerId: Int)
 }
