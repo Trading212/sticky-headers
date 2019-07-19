@@ -7,11 +7,11 @@ apply plugin: 'kotlin-android-extensions'
 apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion compile_sdk_version
     defaultConfig {
         applicationId "com.trading212.stickyheaders"
-        minSdkVersion 15
-        targetSdkVersion 27
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,7 +28,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'com.trading212:diverse-recycler-adapter:0.9.10'
+    implementation 'com.trading212:diverse-recycler-adapter:0.9.11'
 
     implementation "com.android.support:appcompat-v7:$android_support_version"
     implementation "com.android.support:recyclerview-v7:$android_support_version"
