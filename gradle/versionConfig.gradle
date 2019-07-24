@@ -1,7 +1,7 @@
 ext {
     kotlin_version = '1.2.30'
 
-    libraryVersion = '0.1.2'
+    libraryVersion = '0.1.4'
 
     android_support_version = '27.1.0'
 

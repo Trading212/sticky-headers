@@ -16,7 +16,7 @@ public class JavaStickyExampleActivity extends BaseActivity {
         DiverseRecyclerAdapter adapter = new DiverseRecyclerAdapter();
 
         // Games
-        adapter.addItem(new SimpleStickyTextRecyclerItem("Games"), false);
+        adapter.addItem(new SimpleStickyTextRecyclerItem(new SimpleStickyTextRecyclerItem.StickyData("Games", 1)), false);
         adapter.addItems(CollectionsKt.map(generateGamesList(), new Function1<String, RecyclerItem<?, ? extends ViewHolder<?>>>() {
             @Override
             public RecyclerItem<?, ? extends ViewHolder<?>> invoke(String game) {
@@ -25,7 +25,7 @@ public class JavaStickyExampleActivity extends BaseActivity {
         }), false);
 
         // Programming Languages
-        adapter.addItem(new SimpleStickyTextRecyclerItem("Programming Languages"), false);
+        adapter.addItem(new SimpleStickyTextRecyclerItem(new SimpleStickyTextRecyclerItem.StickyData("Programming Languages", 2)), false);
         adapter.addItems(CollectionsKt.map(generateProgrammingLanguagesList(), new Function1<String, RecyclerItem<?, ? extends ViewHolder<?>>>() {
             @Override
             public RecyclerItem<?, ? extends ViewHolder<?>> invoke(String language) {
@@ -34,7 +34,7 @@ public class JavaStickyExampleActivity extends BaseActivity {
         }), false);
 
         // Songs
-        adapter.addItem(new SimpleStickyTextRecyclerItem("Songs"), false);
+        adapter.addItem(new SimpleStickyTextRecyclerItem(new SimpleStickyTextRecyclerItem.StickyData("Songs", 3)), false);
         adapter.addItems(CollectionsKt.map(generateSongsList(), new Function1<String, RecyclerItem<?, ? extends ViewHolder<?>>>() {
             @Override
             public RecyclerItem<?, ? extends ViewHolder<?>> invoke(String song) {
