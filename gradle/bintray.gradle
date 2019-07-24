@@ -10,13 +10,11 @@ publish {
 
     publishVersion = libraryVersion
 
-    repoName = 'maven'
-    uploadName = 'sticky-headers'
     userOrg = 'trading-212'
-
+    repoName = 'maven'
     artifactId = 'sticky-headers'
     groupId = 'com.trading212'
-    uploadName = 'StickyHeaders'
+    uploadName = 'sticky-headers'
 
     desc = 'A simple library for Sticky Header drawn with ItemDecoration'
 
@@ -26,3 +24,6 @@ publish {
 
     licences = ['Apache-2.0']
 }
+
+// To publish the version first make sure you have the `bintray.user` and `bintray.apikey` properties set in the
+// `local.properties` file and then run: `gradlew clean build bintrayUpload -PdryRun=false`
