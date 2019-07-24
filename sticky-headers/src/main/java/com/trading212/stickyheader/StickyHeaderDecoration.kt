@@ -72,11 +72,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         stickyOffsets.clear()
     }
 
-    override fun onDrawOver(canvas: Canvas?, recyclerView: RecyclerView?, state: RecyclerView.State?) {
-
-        if (canvas == null || recyclerView == null) {
-            return
-        }
+    override fun onDrawOver(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
 
         if (this.recyclerView == null) {
             this.recyclerView = recyclerView
@@ -184,7 +180,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         val adapterPosition = (stickyViewHolder as RecyclerView.ViewHolder).adapterPosition
 
         stickyHeadersMap.getOrPut(stickyId) {
-            val adapter = recyclerView.adapter
+            val adapter = recyclerView.adapter!!
 
             val newStickyViewHolder = adapter.onCreateViewHolder(recyclerView, stickyItemViewType)
 
@@ -245,7 +241,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
     }
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             scrollDeltaY = dy
         }
     }
@@ -332,7 +328,7 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
 
                 val adapterObserver = this.adapterObserver ?: return
 
-                it.adapter.unregisterAdapterDataObserver(adapterObserver)
+                it.adapter?.unregisterAdapterDataObserver(adapterObserver)
             }
         }
     }

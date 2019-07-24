@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply from: "${rootDir}/gradle/bintrayConfig.gradle"
+
 apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
@@ -30,5 +30,4 @@ repositories {
     mavenCentral()
 }
 
-apply from: "${rootDir}/gradle/install.gradle"
 apply from: "${rootDir}/gradle/bintray.gradle"

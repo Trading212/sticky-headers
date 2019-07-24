@@ -71,7 +71,7 @@ class GenericRecyclerViewDemoActivity : BaseActivity() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is TextViewHolder) {
-                holder.itemView?.isClickable = true
+                holder.itemView.isClickable = true
 
                 holder.textView.text = items[position].title
             }
