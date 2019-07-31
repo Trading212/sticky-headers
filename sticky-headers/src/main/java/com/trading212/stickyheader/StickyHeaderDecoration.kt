@@ -113,6 +113,8 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
                     val viewTop = view.top
                     stickyOffsets[stickyId] = view.top
 
+                    val adapterPosition = (stickyHeaderViewHolder as RecyclerView.ViewHolder).adapterPosition
+
                     // New Sticky incoming
                     if (viewTop < STICKY_THRESHOLD || (scrollDeltaY > viewTop && recyclerView.canScrollVertically(1))) {
 
@@ -120,14 +122,16 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
                             stickiesStack.push(stickyId)
                         }
 
-                        createOrUpdateStickyHeader(view, stickyHeaderViewHolder, recyclerView)
+                        if (adapterPosition != -1) {
+                            createOrUpdateStickyHeader(view, stickyHeaderViewHolder, recyclerView)
+                        }
+                        
                     } else if (stickiesStack.isNotEmpty() && stickiesStack.peek() == stickyId && viewTop >= 0) {
                         stickiesStack.pop()
                     }
 
                     currentStickyId = if (stickiesStack.isNotEmpty()) stickiesStack.peek() else null
 
-                    val adapterPosition = (stickyHeaderViewHolder as RecyclerView.ViewHolder).adapterPosition
                     if (adapterPosition != -1) {
                         adapterPositionsMap[stickyId] = adapterPosition
                     }
