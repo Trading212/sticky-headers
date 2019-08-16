@@ -70,6 +70,8 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
     fun clear() {
         stickyHeadersMap.clear()
         stickyOffsets.clear()
+        adapterPositionsMap.clear()
+        stickiesStack.clear()
     }
 
     override fun onDrawOver(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
@@ -308,6 +310,8 @@ class StickyHeaderDecoration : RecyclerView.ItemDecoration() {
         }
 
         override fun onChanged() {
+
+            clear()
 
             updateStickyHeaders()
         }
