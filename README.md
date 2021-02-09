@@ -92,7 +92,7 @@ adapter.notifyDataSetChanged()
 
 ## License
 
-Copyright 2020 Trading 212 Ltd.
+Copyright 2021 Trading 212 Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
